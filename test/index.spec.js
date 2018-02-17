@@ -1,8 +1,16 @@
 const merge = require('..');
+// const {mergeWith} = require('lodash');
+
+// const merge = (a, ...o) => {
+// 	o.forEach(b => {
+// 		a = mergeWith(a, b, (a, b) => Array.isArray(a) && Array.isArray(b) ? [...a, ...b] : undefined);
+// 	});
+// 	return a;
+// }
 
 // test suite borrowed and modified from http://npm.im/deep-assign
 
-it('assign own enumerable properties from source to target object', () => {
+it('assign own enumerable properties from source to target object', () => { // lodash ignores null
 	expect(merge({foo: 0}, {bar: 1})).toEqual({foo: 0, bar: 1});
 	expect(merge({foo: 0}, null, undefined)).toEqual(null);
 	expect(merge({foo: 0}, undefined, {bar: 1}, undefined)).toEqual({foo: 0, bar: 1});
@@ -32,7 +40,7 @@ it('not merge from complex objects', () => {
 	expect(merge(unicorn, {rainbows: 'many'})).toEqual({rainbows: 'many'});
 });
 
-it('not merge with complex object', () => {
+it('not merge with complex object', () => { // lodash still merge them
 	const Unicorn = function (){};
 	Unicorn.prototype.rainbows = 'many';
 	const unicorn = new Unicorn();
@@ -159,7 +167,7 @@ it('overwrite primitives as targets', () => {
 	expect(target.sym).toEqual({rainbows: 'many'});
 });
 
-it('support symbol properties', () => {
+it('support symbol properties', () => { // lodash doesn't
 	const target = {};
 	const source = {};
 	const sym = Symbol('foo');
@@ -186,7 +194,7 @@ it('do not transform functions', () => {
 	expect(typeof merge({}, target, source).foo).toEqual('function');
 });
 
-it('reuse object in deep copy', () => {
+it('reuse object in deep copy', () => { // lodash doesn't
 	const fixture = {
 		foo: {
 			bar: false
@@ -207,19 +215,19 @@ it('reuse object in deep copy', () => {
 	expect(run()).toEqual(true);
 });
 
-it('merge Sets', () => {
+it('merge Sets', () => { // lodash doesn't
 	const s1 = new Set([1, 3]);
 	const s2 = new Set([6, 3]);
 	expect(merge(s1, s2)).toEqual(new Set([1, 3, 6]));
 });
 
-it('merge Maps', () => {
+it('merge Maps', () => { // lodash doesn't
 	const s1 = new Map([[1, 3], [3, 4]]);
 	const s2 = new Map([[6, 3], [3, 2]]);
 	expect(merge(s1, s2)).toEqual(new Map([[1, 3], [3,2], [6, 3]]));
 });
 
-it('works with README example:)', () => {
+it('works with README example:)', () => { // lodash doesn't (Set)
 	class D { constructor(o) { Object.assign(this, o); } }
 
 	expect(
@@ -237,7 +245,7 @@ it('merge deep', () => {
 		{d: {attrs:[]}}, 
 		{a: 2},
 		{a: 1, b: {c: [1,2]}, d: {attrs: ['oko', 'uhih']}}, 
-		{b: {d:4, c:[5]}}
+		{b: {d:4, c: [5]}}
 	);
 	expect(x).toEqual(
 		{
