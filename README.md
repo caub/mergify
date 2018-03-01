@@ -21,6 +21,16 @@ merge(
 - concatenates arrays
 - works well with configurations, like webpack ones
 
+
+Similar to lodash's mergeWith, but with some [nuances](test/index.spec.js) (search for 'lodash')
+
+```js
+const {mergeWith} = require('lodash');
+const merge = (...o) => o.reduce((a, b) => 
+	mergeWith(a, b, (a, b) => Array.isArray(a) && Array.isArray(b) ? [...a, ...b] : undefined)
+);
+```
+
 [npm-image]: https://img.shields.io/npm/v/mergify.svg?style=flat-square
 [npm-url]: https://www.npmjs.com/package/mergify
 [travis-image]: https://img.shields.io/travis/caub/mergify.svg?style=flat-square
