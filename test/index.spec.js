@@ -1,12 +1,9 @@
-const merge = require('..');
-// const {mergeWith} = require('lodash');
+const mergeLocal = require('..');
+const {mergeWith} = require('lodash');
 
-// const merge = (a, ...o) => {
-// 	o.forEach(b => {
-// 		a = mergeWith(a, b, (a, b) => Array.isArray(a) && Array.isArray(b) ? [...a, ...b] : undefined);
-// 	});
-// 	return a;
-// }
+const mergeLodash = (...o) => o.reduce((a, b) => mergeWith(a, b, mergeLocal.merge));
+
+const merge = process.env.LODASH ? mergeLodash : mergeLocal;
 
 // test suite borrowed and modified from http://npm.im/deep-assign
 

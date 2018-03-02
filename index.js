@@ -1,41 +1,48 @@
-function isPojo(o) {
+const isPojo = o => {
 	var proto = Object.getPrototypeOf(o);
 	return proto === null || Object.getPrototypeOf(proto) === null;
 }
 
-function merge() {
-	var target = arguments[0];
-	for (var i = 1; i < arguments.length; i++) {
-		var source = arguments[i];
-		if (source === undefined) { // do nothing
-		} else if (source === null || target == null) {
-			target = source;
-		} else {
-			if ((isPojo(target) || Array.isArray(target)) && isPojo(source)) { // merge resourcesively source into target
-				Object.keys(source).forEach(function (key) {
-					target[key] = merge(target[key], source[key]);
-				});
-				Object.getOwnPropertySymbols(source).forEach(function (key) {
-					if (Object.getOwnPropertyDescriptor(source, key).enumerable) {
-						target[key] = merge(target[key], source[key]);
-					}
-				});
-			} else if (Array.isArray(target) && Array.isArray(source)) { // concat
-				target = target.concat(source);
-			} else if (typeof target.add === 'function' && typeof source.add === 'function') { // Set-like
-				source.forEach(function (value) {
-					target.add(value);
-				});
-			} else if (typeof target.set === 'function' && typeof source.set === 'function') { // Map-like
-				source.forEach(function (value, key) {
-					target.set(key, merge(target.get(key), value));
-				});
-			} else { // if target is a number, boolean, string, symbol, function or complex object instance, then just replace
-				target = source;
-			}
-		}
+const merge = (x, y) => {
+	if (y === undefined) {
+		return x;
 	}
-	return target;
+	if (y === null || x == null) {
+		return y;
+	}
+	if ((isPojo(x) || Array.isArray(x)) && isPojo(y)) { // merge recursively y into x
+		Object.keys(y).forEach(function (key) {
+			x[key] = merge(x[key], y[key]);
+		});
+		Object.getOwnPropertySymbols(y).forEach(function (key) {
+			if (Object.getOwnPropertyDescriptor(y, key).enumerable) {
+				x[key] = merge(x[key], y[key]);
+			}
+		});
+		return x;
+	}
+	if (Array.isArray(x) && Array.isArray(y)) { // concat
+		return x.concat(y);
+	}
+	if (typeof x.add === 'function' && typeof y.add === 'function') { // Set-like
+		y.forEach(function (value) {
+			x.add(value);
+		});
+		return x;
+	}
+	if (typeof x.set === 'function' && typeof y.set === 'function') { // Map-like
+		y.forEach(function (value, key) {
+			x.set(key, merge(x.get(key), value));
+		});
+		return x;
+	}
+	// if x is a number, boolean, string, symbol, function or complex object instance, then just replace
+	return y;
 }
 
-module.exports = merge;
+const mergify = (...o) => o.reduce((a, b) => merge(a, b));
+
+module.exports = mergify;
+mergify.default = mergify;
+mergify.merge = merge;
+mergify.isPojo = isPojo;
