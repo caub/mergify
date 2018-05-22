@@ -1,6 +1,6 @@
 {
   "name": "mergify",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Merge objects deeply",
   "main": "index.js",
   "files": [
@@ -22,8 +22,8 @@
   "repository": "github:caub/mergify",
   "dependencies": {},
   "devDependencies": {
-    "codecov": "^3.0.0",
-    "jest": "^22.3.0",
-    "lodash": "^4.17.5"
+    "codecov": "^3.0.2",
+    "jest": "^22.4.4",
+    "lodash": "^4.17.10"
   }
 }
